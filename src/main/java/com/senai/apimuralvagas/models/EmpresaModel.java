@@ -11,6 +11,7 @@ public class EmpresaModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int empresaId;
 	private String nome;
+	private LogoModel logo;
 	private String cnpj;
 	
     @ManyToOne
@@ -18,9 +19,7 @@ public class EmpresaModel {
     @JoinColumn(name = "enderecoid")
 	private EnderecoModel endereco;
     
-	private String ramo;
-	private String site;
-	private int qtdFuncionarios;
+    private DescricaoEmpresaModel descricao;
 	private Boolean autorizacao;
 	
 	
@@ -36,6 +35,12 @@ public class EmpresaModel {
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+	public LogoModel getLogo() {
+		return logo;
+	}
+	public void setLogo(LogoModel logo) {
+		this.logo = logo;
+	}
 	public String getCnpj() {
 		return cnpj;
 	}
@@ -48,23 +53,11 @@ public class EmpresaModel {
 	public void setEndereco(EnderecoModel endereco) {
 		this.endereco = endereco;
 	}
-	public String getRamo() {
-		return ramo;
+	public DescricaoEmpresaModel getDescricao() {
+		return descricao;
 	}
-	public void setRamo(String ramo) {
-		this.ramo = ramo;
-	}
-	public String getSite() {
-		return site;
-	}
-	public void setSite(String site) {
-		this.site = site;
-	}
-	public int getQtdFuncionarios() {
-		return qtdFuncionarios;
-	}
-	public void setQtdFuncionarios(int qtdFuncionarios) {
-		this.qtdFuncionarios = qtdFuncionarios;
+	public void setDescricao(DescricaoEmpresaModel descricao) {
+		this.descricao = descricao;
 	}
 	public Boolean getAutorizacao() {
 		return autorizacao;
@@ -72,6 +65,9 @@ public class EmpresaModel {
 	public void setAutorizacao(Boolean autorizacao) {
 		this.autorizacao = autorizacao;
 	}
+	
+	
+
 	
 	
 }
