@@ -9,16 +9,15 @@ import jakarta.persistence.*;
 public class VagaModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "vaga_id")
 	private int vagaId;
 	
     @OneToOne
-    @MapsId("tipoContratacaoId")
-    @JoinColumn(name = "tipoContratacaoId")
+    @JoinColumn(name = "tipo_contratacao_id")
 	private TipoContratacaoModel tipoContratacao;
     
     @ManyToOne
-    @MapsId("formaCandidaturaId")
-    @JoinColumn(name = "formaCandidaturaId")
+    @JoinColumn(name = "forma_candidatura_id")
     private FormaCandidaturaModel formaCandidatura;
     
     private String descricao;
@@ -26,8 +25,7 @@ public class VagaModel {
     private int cargaSemanal;
     
     @ManyToOne
-    @MapsId("beneficioId")
-    @JoinColumn(name = "beneficioId")
+    @JoinColumn(name = "beneficio_id")
     private BeneficiosModel beneficios;
     
 

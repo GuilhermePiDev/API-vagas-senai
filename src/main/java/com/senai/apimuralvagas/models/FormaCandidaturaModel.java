@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table(name="formaCandidatura")
+@Table(name="forma_candidatura")
 public class FormaCandidaturaModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "forma_candidatura_id")
 	private int formaCandidaturaId;
 	private String formaCandidatura;
 	

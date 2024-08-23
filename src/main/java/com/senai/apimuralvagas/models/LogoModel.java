@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class LogoModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "logo_id")
 	private int logoId;
 	private String linkLogo;
 	

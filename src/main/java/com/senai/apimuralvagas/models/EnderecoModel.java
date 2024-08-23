@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 public class EnderecoModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "endereco_id")
 	private int enderecoid;
 	private String cep;
 	private String rua;

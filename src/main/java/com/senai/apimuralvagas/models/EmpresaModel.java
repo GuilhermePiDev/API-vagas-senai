@@ -9,16 +9,21 @@ public class EmpresaModel {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "empresa_id")
 	private int empresaId;
 	private String nome;
+	
+	@OneToOne
+	@JoinColumn(name = "logo_id")
 	private LogoModel logo;
 	private String cnpj;
 	
     @ManyToOne
-    @MapsId("enderecoid")
-    @JoinColumn(name = "enderecoid")
+    @JoinColumn(name = "endereco_id")
 	private EnderecoModel endereco;
     
+    @OneToOne
+    @JoinColumn(name = "descricao_id")
     private DescricaoEmpresaModel descricao;
 	private Boolean autorizacao;
 	

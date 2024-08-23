@@ -3,10 +3,11 @@ package com.senai.apimuralvagas.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name="tipoContratacao")
+@Table(name="tipo_contratacao")
 public class TipoContratacaoModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "tipo_contratacao_id")
 	private int tipoContratacaoId;
 	private String tipo;
 	

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class BeneficiosModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "beneficio_id")
 	private int beneficioId;
 	private String beneficio;
 	
