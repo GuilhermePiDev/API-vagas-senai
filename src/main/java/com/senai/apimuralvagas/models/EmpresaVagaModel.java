@@ -10,13 +10,13 @@ public class EmpresaVagaModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY )
 	private int empresaVagaId;
 	
-	@OneToMany
-	@Column(name = "empresa_id")
+	@ManyToOne
+	@JoinColumn(name = "empresa_id", nullable = false)
 	private EmpresaModel empresaId;
-	@OneToMany
-	@Column(name = "vaga_id")
-	
+	@ManyToOne
+	@JoinColumn(name = "vaga_id" , nullable = false)
 	private VagaModel vagaId;
+	
 	public int getEmpresaVagaId() {
 		return empresaVagaId;
 	}

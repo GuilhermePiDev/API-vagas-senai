@@ -1,5 +1,7 @@
 package com.senai.apimuralvagas.models;
 
+import java.util.Set;
+
 import jakarta.persistence.*;
 
 
@@ -26,6 +28,10 @@ public class EmpresaModel {
     @JoinColumn(name = "descricao_id")
     private DescricaoEmpresaModel descricao;
 	private Boolean autorizacao;
+	
+    @OneToMany(mappedBy = "empresaId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EmpresaVagaModel> empresaVagas;
+	
 	
 	
 	public int getEmpresaId() {

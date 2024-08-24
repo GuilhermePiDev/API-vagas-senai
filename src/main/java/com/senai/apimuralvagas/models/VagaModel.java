@@ -1,6 +1,7 @@
 package com.senai.apimuralvagas.models;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import jakarta.persistence.*;
 
@@ -33,6 +34,9 @@ public class VagaModel {
     private LocalDateTime dataHoraCriacao = LocalDateTime.now() ;
     
     private LocalDateTime dataHoraDefinidaPeloUsuario;
+    
+    @OneToMany(mappedBy = "vagaId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<EmpresaVagaModel> empresaVagas;
 
 	public int getVagaId() {
 		return vagaId;
