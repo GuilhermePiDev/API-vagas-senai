@@ -3,7 +3,7 @@ package com.senai.apimuralvagas.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Admin")
+@Table(name = "admin")
 public class AdminModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,6 +12,7 @@ public class AdminModel {
 	private String senha;
 	private String cpf;
 	private String email;
+
 	public int getAdminId() {
 		return adminId;
 	}

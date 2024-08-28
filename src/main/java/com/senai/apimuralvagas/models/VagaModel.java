@@ -3,6 +3,8 @@ package com.senai.apimuralvagas.models;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -12,6 +14,7 @@ public class VagaModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "vaga_id")
 	private int vagaId;
+	private String nomeVaga;
 	
     @OneToOne
     @JoinColumn(name = "tipo_contratacao_id")
@@ -29,13 +32,15 @@ public class VagaModel {
     @JoinColumn(name = "beneficio_id")
     private BeneficiosModel beneficios;
     
-
+	private double salario;
+	private int qtdVagasDisponiveis;
     @Column(updatable = false)
-    private LocalDateTime dataHoraCriacao = LocalDateTime.now() ;
+    private LocalDateTime dataPublicacao = LocalDateTime.now() ;
     
-    private LocalDateTime dataHoraDefinidaPeloUsuario;
+    private LocalDateTime dataExpiracao;
     
     @OneToMany(mappedBy = "vagaId", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
     private Set<EmpresaVagaModel> empresaVagas;
 
 	public int getVagaId() {
@@ -44,6 +49,14 @@ public class VagaModel {
 
 	public void setVagaId(int vagaId) {
 		this.vagaId = vagaId;
+	}
+
+	public String getNomeVaga() {
+		return nomeVaga;
+	}
+
+	public void setNomeVaga(String nomeVaga) {
+		this.nomeVaga = nomeVaga;
 	}
 
 	public TipoContratacaoModel getTipoContratacao() {
@@ -94,21 +107,48 @@ public class VagaModel {
 		this.beneficios = beneficios;
 	}
 
+	public double getSalario() {
+		return salario;
+	}
+
+	public void setSalario(double salario) {
+		this.salario = salario;
+	}
+
+	public int getQtdVagasDisponiveis() {
+		return qtdVagasDisponiveis;
+	}
+
+	public void setQtdVagasDisponiveis(int qtdVagasDisponiveis) {
+		this.qtdVagasDisponiveis = qtdVagasDisponiveis;
+	}
+
 	public LocalDateTime getDataHoraCriacao() {
-		return dataHoraCriacao;
+		return dataPublicacao;
 	}
 
 	public void setDataHoraCriacao(LocalDateTime dataHoraCriacao) {
-		this.dataHoraCriacao = dataHoraCriacao;
+		this.dataPublicacao = dataHoraCriacao;
 	}
 
 	public LocalDateTime getDataHoraDefinidaPeloUsuario() {
-		return dataHoraDefinidaPeloUsuario;
+		return dataExpiracao;
 	}
 
 	public void setDataHoraDefinidaPeloUsuario(LocalDateTime dataHoraDefinidaPeloUsuario) {
-		this.dataHoraDefinidaPeloUsuario = dataHoraDefinidaPeloUsuario;
+		this.dataExpiracao = dataHoraDefinidaPeloUsuario;
 	}
+
+	public Set<EmpresaVagaModel> getEmpresaVagas() {
+		return empresaVagas;
+	}
+
+	public void setEmpresaVagas(Set<EmpresaVagaModel> empresaVagas) {
+		this.empresaVagas = empresaVagas;
+	}
+
+	
+	
     
     
 

@@ -10,6 +10,7 @@ public class DescricaoEmpresaModel {
 	@Column(name = "descricao_id")
 	 private int descricaoId;
 	 private String ramo;
+	 private String site;
 	 private int qntdFuncionarios;
 	 private String descricao;
 	 
@@ -26,6 +27,7 @@ public class DescricaoEmpresaModel {
 	public void setRamo(String ramo) {
 		this.ramo = ramo;
 	}
+	
 	public int getQntdFuncionarios() {
 		return qntdFuncionarios;
 	}
@@ -37,6 +39,12 @@ public class DescricaoEmpresaModel {
 	}
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+	public String getSite() {
+		return site;
+	}
+	public void setSite(String site) {
+		this.site = site;
 	}
 	 
 	 
