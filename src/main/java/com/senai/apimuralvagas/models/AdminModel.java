@@ -1,9 +1,11 @@
 package com.senai.apimuralvagas.models;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "admin")
+@Data
 public class AdminModel {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,31 +15,4 @@ public class AdminModel {
 	private String cpf;
 	private String email;
 
-	public int getAdminId() {
-		return adminId;
-	}
-	public void setAdminId(int adminId) {
-		this.adminId = adminId;
-	}
-	public String getSenha() {
-		return senha;
-	}
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
-	public String getCpf() {
-		return cpf;
-	}
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	
-	
-	
 }
