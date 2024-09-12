@@ -2,7 +2,7 @@ package com.senai.apimuralvagas.models;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,23 +21,20 @@ public class EmpresaModel {
 	private String senha;
 	@OneToOne
 	@JoinColumn(name = "logo_id")
-	@JsonIgnore
 	private LogoModel logo;
 	private String cnpj;
     @ManyToOne
     @JoinColumn(name = "endereco_id")
-	@JsonIgnore
 	private EnderecoModel endereco;
     @OneToOne
     @JoinColumn(name = "descricao_id")
-	@JsonIgnore
     private DescricaoEmpresaModel descricao;
 	private String email;
 	private String telefone; 
 	private Boolean autorizacao;
     @OneToMany(mappedBy = "empresaId", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
-	@JsonIgnore
+	
     private Set<EmpresaVagaModel> empresaVagas;
 
 }
