@@ -1,6 +1,8 @@
 package com.senai.apimuralvagas.services;
 
 import java.util.List;
+import java.lang.reflect.Field;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,11 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.senai.apimuralvagas.models.EmpresaModel;
 import com.senai.apimuralvagas.repositorys.EmpresaRepo;
 
+import jakarta.persistence.EntityNotFoundException;
+
 
 @Service
 public class EmpresaService {
 	@Autowired
 	private EmpresaRepo empresaRepo;
+
 	
 	public  List<EmpresaModel> returnAllEmpresas(){
 		if(empresaRepo != null) {
@@ -24,8 +29,56 @@ public class EmpresaService {
 		}
 		
 	}
+    public EmpresaModel returnOneEmpresa(int id){
+        existEmpresa(id);
+        return empresaRepo.findById(id).orElse(null);
+
+    }
+
+    public void deleteEmpresa(int id){
+        existEmpresa(id);
+        empresaRepo.deleteById(id);
+    }
+
 	@Transactional
 	public EmpresaModel postEmpresa(EmpresaModel empresaModel) {
 		return empresaRepo.save(empresaModel);
 	}
+
+    @Transactional
+    public EmpresaModel updateEmpresaParcial(EmpresaModel empresaPatch, int id) {
+        
+        existEmpresa(id);
+        EmpresaModel empresaExistente = empresaRepo.findById(id).orElse(null);
+
+        Field[] fields = EmpresaModel.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                if (field.getName().equals("empresaId")) {
+                    continue;
+                }
+                Object value = field.get(empresaPatch);
+                if (value != null) {
+                    field.set(empresaExistente, value);
+                }
+                
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();            
+            }
+           
+        }
+
+        return empresaRepo.save(empresaExistente);
+    }
+
+    	
+	private void existEmpresa(Integer id) {
+		if (!empresaRepo.existsById(id)) {
+			throw new EntityNotFoundException("Empresa com o id: *" + id + "* não encontrado");
+		}
+	}
 }
+    
+
