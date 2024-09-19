@@ -16,26 +16,22 @@ public class EmpresaModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "empresa_id", updatable = false, nullable = false)	
 	private int empresaId;
-	@Column(name = "nome_empresa")
 	private String nomeEmpresa;
 	private String senha;
-	@OneToOne
-	@JoinColumn(name = "logo_id")
-	@JsonIgnore
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "logo_id" )
 	private LogoModel logo;
 	private String cnpj;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id")
-	@JsonIgnore
 	private EnderecoModel endereco;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "descricao_id")
-	@JsonIgnore
     private DescricaoEmpresaModel descricao;
 	private String email;
 	private String telefone; 
-	private Boolean autorizacao;
-    @OneToMany(mappedBy = "empresaId", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Boolean autorizacao = false;
+    @OneToMany(mappedBy = "empresaId", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	@JsonIgnore
     private Set<EmpresaVagaModel> empresaVagas;
