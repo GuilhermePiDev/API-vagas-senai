@@ -16,18 +16,8 @@ public class SwaggerConfig {
                 .info(new Info()
                         .title("API Mural Vagas")
                         .description("Documentação da API para o projeto Mural Vagas")
-                        .version("1.0.0")
                         .contact(new Contact()
-                                .name("Seu Nome")
-                                .url("http://seusite.com")
-                                .email("seuemail@dominio.com")));
+                                .url("https://github.com/GuilhermePiDev/APl-vagas-senai")));
     }
 
-    @Bean
-    public GroupedOpenApi publicApi() {
-        return GroupedOpenApi.builder()
-                .group("v1")
-                .pathsToMatch("/**")
-                .build();
-    }
 }
