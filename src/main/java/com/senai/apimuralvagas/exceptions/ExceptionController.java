@@ -10,8 +10,17 @@ public class ExceptionController {
 
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
     
+    @ExceptionHandler(EntityAlreadyExist.class)
+    public ResponseEntity<String> handleEntityAlreadyExist(EntityAlreadyExist e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }    
+    
+    @ExceptionHandler(CustomAccessException.class)
+    public ResponseEntity<String> CustomAccessException(CustomAccessException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }    
 }

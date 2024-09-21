@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.senai.apimuralvagas.exceptions.CustomAccessException;
 import com.senai.apimuralvagas.models.EmpresaModel;
 import com.senai.apimuralvagas.services.EmpresaService;
 
@@ -52,7 +53,7 @@ public class EmpresaController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<EmpresaModel> patchEmpresa(@PathVariable int id, @RequestBody EmpresaModel empresaPatch) {
+    public ResponseEntity<EmpresaModel> patchEmpresa(@PathVariable int id, @RequestBody EmpresaModel empresaPatch) throws CustomAccessException {
         EmpresaModel empresa = empresaService.updateEmpresaParcial(empresaPatch, id);
         return new ResponseEntity<>(empresa, HttpStatus.OK);
     }
