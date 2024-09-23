@@ -11,6 +11,7 @@ public class AdminModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "admin_id")
 	private int adminId;
+	private String nome;
 	private String senha;
 	private String cpf;
 	private String email;
