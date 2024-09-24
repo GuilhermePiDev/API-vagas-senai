@@ -23,4 +23,8 @@ public class ExceptionController {
     public ResponseEntity<String> CustomAccessException(CustomAccessException e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }    
+    @ExceptionHandler(InvalidDataException.class)
+    public ResponseEntity<String> InvalidDataException(InvalidDataException e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }
