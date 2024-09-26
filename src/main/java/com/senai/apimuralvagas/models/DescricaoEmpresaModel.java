@@ -18,8 +18,8 @@ public class DescricaoEmpresaModel {
 
 	 private String site;
 
-	@Size(min = 1)
-	 private int qntdFuncionarios;
+	@Min(value = 1)
+	private int qntdFuncionarios;
 
 	@NotBlank
 	 private String descricao;
