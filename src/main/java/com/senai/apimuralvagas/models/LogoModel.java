@@ -1,6 +1,7 @@
 package com.senai.apimuralvagas.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Entity
@@ -11,6 +12,8 @@ public class LogoModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "logo_id")
 	private int logoId;
+
+	@NotBlank
 	private String linkLogo;
 	
 }

@@ -1,6 +1,7 @@
 package com.senai.apimuralvagas.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 
@@ -12,6 +13,8 @@ public class FormaCandidaturaModel {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "forma_candidatura_id")
 	private int formaCandidaturaId;
+
+	@NotBlank
 	private String formaCandidatura;
 
 }
