@@ -7,12 +7,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.validation.annotation.Validated;
 import com.senai.apimuralvagas.models.EmpresaModel;
 import com.senai.apimuralvagas.repositorys.EmpresaRepo;
+
+
 import com.senai.apimuralvagas.exceptions.*;
 
 @Service
+@Validated
 public class EmpresaService {
     @Autowired
     private EmpresaRepo empresaRepo;
@@ -40,11 +43,18 @@ public class EmpresaService {
     @Transactional
     public EmpresaModel postEmpresa(EmpresaModel empresaModel) {
         Optional<EmpresaModel> existingEmpresa = empresaRepo.findByCnpj(empresaModel.getCnpj());
-        if (existingEmpresa.isPresent()) {
-            throw new EntityAlreadyExist("Empresa", "Cnpj", empresaModel.getCnpj());
-        } else {
-            return empresaRepo.save(empresaModel);
+        Boolean validCnpj = isValidCNPJ(empresaModel.getCnpj());
+        if (validCnpj) {
+            if (existingEmpresa.isPresent()) {
+                throw new EntityAlreadyExist("Empresa", "Cnpj", empresaModel.getCnpj());
+            } else {
+                return empresaRepo.save(empresaModel);
+            }
         }
+        else{
+            throw new InvalidDataException("Cnpj", empresaModel.getCnpj());
+        }
+        
 
     }
 
@@ -83,4 +93,46 @@ public class EmpresaService {
             throw new EntityNotFoundException("Empresa", id);
         }
     }
+
+
+
+    public static boolean isValidCNPJ(String cnpj) {
+        cnpj = cnpj.replaceAll("\\D", ""); // Remove caracteres não numéricos
+        if (cnpj.length() != 14 || cnpj.matches("(\\d)\\1{13}")) {
+            return false;
+        }
+
+        // Cálculo do 1º dígito verificador
+        int[] weight1 = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+        int sum = 0;
+        for (int i = 0; i < 12; i++) {
+            sum += (cnpj.charAt(i) - '0') * weight1[i];
+        }
+
+        int firstCheck = 11 - (sum % 11);
+
+        if (firstCheck >= 10) {
+            firstCheck = 0;
+        }
+
+        if (firstCheck != (cnpj.charAt(12) - '0')) {
+            return false;
+        }
+
+        // Cálculo do 2º dígito verificador
+        int[] weight2 = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+        sum = 0;
+        for (int i = 0; i < 13; i++) {
+            sum += (cnpj.charAt(i) - '0') * weight2[i];
+        }
+
+        int secondCheck = 11 - (sum % 11);
+
+        if (secondCheck >= 10) {
+            secondCheck = 0;
+        }
+
+        return secondCheck == (cnpj.charAt(13) - '0');
+    } 
+   
 }
