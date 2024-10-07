@@ -1,25 +1,32 @@
 package com.senai.apimuralvagas.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.senai.apimuralvagas.models.AdminModel;
-import com.senai.apimuralvagas.services.AdminService;
+import com.senai.apimuralvagas.models.EmpresaModel;
+import com.senai.apimuralvagas.services.EmpresaService;
 
+
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+
+@Tag(name = "Admin", description = "Endpoints relacionados ao usuario Admin")
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-    @Autowired
-    private AdminService adminService;
 
-    @PostMapping
-    public ResponseEntity<AdminModel> criarAdmin(@RequestBody AdminModel admin) {
-        adminService.postAdmin(admin);
-        return new ResponseEntity<>(admin, HttpStatus.CREATED);
+    @Autowired
+    private EmpresaService empresaService;
+
+    
+
+    @PostMapping("/autorizar/{empresaId}")
+    public EmpresaModel autorizarEmpresa(@PathVariable Integer empresaId) {
+        return empresaService.autorizarEmpresa(empresaId);
     }
+
+
 }

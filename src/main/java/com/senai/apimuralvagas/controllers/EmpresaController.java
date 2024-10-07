@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +17,12 @@ import com.senai.apimuralvagas.exceptions.CustomAccessException;
 import com.senai.apimuralvagas.models.EmpresaModel;
 import com.senai.apimuralvagas.services.EmpresaService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import org.springframework.web.bind.annotation.RequestBody;
 
 
-
+@Tag(name = "Empresa", description = "Endpoints relacionados ao usuario Empresa")
 @RestController
 @RequestMapping("empresa")
 public class EmpresaController {
@@ -38,12 +39,6 @@ public class EmpresaController {
     public ResponseEntity<EmpresaModel> returnOneEmpresa(@PathVariable int id) {
         EmpresaModel empresa = empresaService.returnOneEmpresa(id);
         return new ResponseEntity<>(empresa, HttpStatus.OK);
-    }
-
-    @PostMapping
-    public ResponseEntity<EmpresaModel> criarEmpresa(@RequestBody EmpresaModel empresa) {
-        empresaService.postEmpresa(empresa);
-        return new ResponseEntity<>(empresa, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")

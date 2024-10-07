@@ -1,7 +1,12 @@
 package com.senai.apimuralvagas.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.senai.apimuralvagas.models.AdminModel;
 import com.senai.apimuralvagas.repositorys.AdminRepo;
@@ -9,12 +14,18 @@ import java.util.Optional;
 
 import com.senai.apimuralvagas.exceptions.*;
 
-@Service
+@Service("adminService")
 public class AdminService {
     @Autowired
     private AdminRepo adminRepo;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
+    @Transactional
     public AdminModel postAdmin(AdminModel admin) {
+        admin.setSenha(passwordEncoder.encode(admin.getSenha()));
         Optional<AdminModel> adminCpf = adminRepo.findByCpf(admin.getCpf());
         Boolean validCpf = CpfValidator(admin.getCpf());
 
@@ -67,8 +78,10 @@ public class AdminService {
             secondCheck = 0;
         }
         
-        return secondCheck == (cpf.charAt(10) - '0');
+        return secondCheck == (cpf.charAt(10) - '0'); 
     }
+
+    
     
 
 }

@@ -5,20 +5,25 @@ import java.lang.reflect.Field;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import com.senai.apimuralvagas.models.EmpresaModel;
 import com.senai.apimuralvagas.repositorys.EmpresaRepo;
 
 
 import com.senai.apimuralvagas.exceptions.*;
 
-@Service
-@Validated
+@Service("empresaService")
 public class EmpresaService {
     @Autowired
     private EmpresaRepo empresaRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public List<EmpresaModel> returnAllEmpresas() {
         if (empresaRepo != null) {
@@ -42,6 +47,8 @@ public class EmpresaService {
 
     @Transactional
     public EmpresaModel postEmpresa(EmpresaModel empresaModel) {
+        empresaModel.setSenha(passwordEncoder.encode(empresaModel.getSenha()));
+
         Optional<EmpresaModel> existingEmpresa = empresaRepo.findByCnpj(empresaModel.getCnpj());
         Boolean validCnpj = isValidCNPJ(empresaModel.getCnpj());
         if (validCnpj) {
@@ -67,7 +74,6 @@ public class EmpresaService {
         Field[] fields = EmpresaModel.class.getDeclaredFields();
 
         for (Field field : fields) {
-            // validar para login depois
             field.setAccessible(true);
             try {
             
@@ -135,4 +141,10 @@ public class EmpresaService {
         return secondCheck == (cnpj.charAt(13) - '0');
     } 
    
+    public EmpresaModel autorizarEmpresa(Integer empresaId) {
+        EmpresaModel empresa = empresaRepo.findById(empresaId).orElseThrow(() -> new EntityNotFoundException("Empresa", empresaId));
+        empresa.setAutorizacao(true);
+        return empresaRepo.save(empresa);
+    }
+
 }
