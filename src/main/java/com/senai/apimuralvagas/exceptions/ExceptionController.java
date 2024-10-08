@@ -47,4 +47,18 @@ public class ExceptionController {
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(JWTCreate.class)
+    public ResponseEntity<String> JWTCreate(JWTCreate e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    } 
+
+    @ExceptionHandler(JWTVerification.class)
+    public ResponseEntity<String> JWTVerification(JWTVerification e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    } 
+
+
+
+
 }
