@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.senai.apimuralvagas.DTO.AuthDto;
+import com.senai.apimuralvagas.DTO.AuthRequiereDto;
+import com.senai.apimuralvagas.DTO.AuthResponseDTO;
 import com.senai.apimuralvagas.models.AdminModel;
 import com.senai.apimuralvagas.models.EmpresaModel;
 import com.senai.apimuralvagas.services.AdminService;
@@ -58,7 +59,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid AuthDto auth) {
+    public ResponseEntity<?> login(@RequestBody @Valid AuthRequiereDto auth) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(auth.email(),auth.senha());
 
@@ -66,7 +67,6 @@ public class AuthController {
 
         var token = tokenService.generateToken((UserDetails) loginUser.getPrincipal());
     
-        return ResponseEntity.ok(token);
-
+        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
     }
 }
