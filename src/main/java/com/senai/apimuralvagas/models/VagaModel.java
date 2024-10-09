@@ -3,6 +3,7 @@ package com.senai.apimuralvagas.models;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
@@ -24,14 +25,12 @@ public class VagaModel {
     @NotBlank()
 	private String nomeVaga;
 
-    @NotBlank()
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "tipo_contratacao_id")
     @Valid
 	private TipoContratacaoModel tipoContratacao;
 
-    @NotBlank()
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "forma_candidatura_id")
     @Valid
     private FormaCandidaturaModel formaCandidatura;
@@ -45,8 +44,7 @@ public class VagaModel {
     @Min(value = 1)
     private int cargaSemanal;
 
-    @NotBlank()
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "beneficio_id")
     @Valid
     private BeneficiosModel beneficios; 
@@ -65,6 +63,7 @@ public class VagaModel {
 
     @OneToMany(mappedBy = "vagaId", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
+    @JsonIgnore
     private Set<EmpresaVagaModel> empresaVagas;
 
 }
