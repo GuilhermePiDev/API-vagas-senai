@@ -21,14 +21,19 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserDetails userDetails = adminRepo.findByEmail(email);
         if (userDetails != null) {
+            userDetails.getAuthorities()
+                    .forEach(authority -> System.out.println("Permissão: " + authority.getAuthority()));
             return userDetails;
         }
-        
+
         userDetails = empresaRepo.findByEmail(email);
         if (userDetails != null) {
+            userDetails.getAuthorities()
+                    .forEach(authority -> System.out.println("Permissão: " + authority.getAuthority()));
             return userDetails;
         }
 
         throw new UsernameNotFoundException("Usuário não encontrado");
     }
+
 }
