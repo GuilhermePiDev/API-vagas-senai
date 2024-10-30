@@ -57,7 +57,7 @@ public class EmpresaModel implements UserDetails {
 
 	private Boolean autorizacao = false;
 
-	private RoleEnum role = RoleEnum.EMPRESABLOCK;
+	private RoleEnum role;
 
 	@OneToMany(mappedBy = "empresaId", cascade = CascadeType.ALL)
 	@JsonManagedReference
@@ -66,10 +66,11 @@ public class EmpresaModel implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		if (this.role == role.EMPRESA)
-			return List.of(new SimpleGrantedAuthority("ROLE_EMPRESABLOCK"), new SimpleGrantedAuthority("ROLE_EMPRESA"));
-		else
-			return List.of(new SimpleGrantedAuthority("ROLE_EMPRESABLOCK"));
+		if (autorizacao){
+			return List.of( new SimpleGrantedAuthority("ROLE_EMPRESA"));
+		}
+		
+		return null;
 	}
 
 	@Override
