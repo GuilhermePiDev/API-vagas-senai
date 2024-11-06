@@ -140,7 +140,7 @@ public class EmpresaService {
    
     public EmpresaModel autorizarEmpresa(Integer id) {
         
-        empresaRepo.existsById(id);
+        existEmpresa(id);
         EmpresaModel empresa = empresaRepo.findById(id).orElse(null);
         empresa.setAutorizacao(true);
         return empresaRepo.save(empresa);
