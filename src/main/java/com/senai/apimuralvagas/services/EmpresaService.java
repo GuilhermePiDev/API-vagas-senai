@@ -5,9 +5,6 @@ import java.lang.reflect.Field;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,8 +138,10 @@ public class EmpresaService {
         return secondCheck == (cnpj.charAt(13) - '0');
     } 
    
-    public EmpresaModel autorizarEmpresa(Integer empresaId) {
-        EmpresaModel empresa = empresaRepo.findById(empresaId).orElseThrow(() -> new EntityNotFoundException("Empresa", empresaId));
+    public EmpresaModel autorizarEmpresa(Integer id) {
+        
+        empresaRepo.existsById(id);
+        EmpresaModel empresa = empresaRepo.findById(id).orElse(null);
         empresa.setAutorizacao(true);
         return empresaRepo.save(empresa);
     }
