@@ -1,16 +1,18 @@
 package com.senai.apimuralvagas.services;
 
+import java.util.Collections;
 import java.util.List;
 import java.lang.reflect.Field;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.senai.apimuralvagas.models.EmpresaModel;
 import com.senai.apimuralvagas.repositorys.EmpresaRepo;
-
 
 import com.senai.apimuralvagas.exceptions.*;
 
@@ -37,6 +39,26 @@ public class EmpresaService {
 
     }
 
+    public List<EmpresaModel> returnTrue() {
+        if (empresaRepo != null) {
+            return empresaRepo.findAll().stream()
+                    .filter(empresa -> empresa.getAutorizacao() == true) 
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public List<EmpresaModel> returnFalse() {
+        if (empresaRepo != null) {
+            return empresaRepo.findAll().stream()
+                    .filter(empresa -> empresa.getAutorizacao() == false) 
+                    .collect(Collectors.toList());
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
     public void deleteEmpresa(int id) {
         existEmpresa(id);
         empresaRepo.deleteById(id);
@@ -54,11 +76,9 @@ public class EmpresaService {
             } else {
                 return empresaRepo.save(empresaModel);
             }
-        }
-        else{
+        } else {
             throw new InvalidDataException("Cnpj", empresaModel.getCnpj());
         }
-        
 
     }
 
@@ -73,7 +93,7 @@ public class EmpresaService {
         for (Field field : fields) {
             field.setAccessible(true);
             try {
-            
+
                 if (field.getName().equals("empresaId")) {
                     continue;
                 }
@@ -97,8 +117,6 @@ public class EmpresaService {
         }
     }
 
-
-
     public static boolean isValidCNPJ(String cnpj) {
         cnpj = cnpj.replaceAll("\\D", ""); // Remove caracteres não numéricos
         if (cnpj.length() != 14 || cnpj.matches("(\\d)\\1{13}")) {
@@ -106,7 +124,7 @@ public class EmpresaService {
         }
 
         // Cálculo do 1º dígito verificador
-        int[] weight1 = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+        int[] weight1 = { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
         int sum = 0;
         for (int i = 0; i < 12; i++) {
             sum += (cnpj.charAt(i) - '0') * weight1[i];
@@ -123,7 +141,7 @@ public class EmpresaService {
         }
 
         // Cálculo do 2º dígito verificador
-        int[] weight2 = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+        int[] weight2 = { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
         sum = 0;
         for (int i = 0; i < 13; i++) {
             sum += (cnpj.charAt(i) - '0') * weight2[i];
@@ -136,10 +154,10 @@ public class EmpresaService {
         }
 
         return secondCheck == (cnpj.charAt(13) - '0');
-    } 
-   
+    }
+
     public EmpresaModel autorizarEmpresa(Integer id) {
-        
+
         existEmpresa(id);
         EmpresaModel empresa = empresaRepo.findById(id).orElse(null);
         empresa.setAutorizacao(true);
