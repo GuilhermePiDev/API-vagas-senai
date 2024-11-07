@@ -15,15 +15,15 @@ public class EmpresaVagaModel {
 	@Column(name = "empresa_vaga_id")
 	private int empresaVagaId;
 
-	@ManyToOne
-	@JoinColumn(name = "empresa_id", nullable = false)
-	@JsonBackReference
-	private EmpresaModel empresaId;
-	
-	@ManyToOne
-	@JoinColumn(name = "vaga_id" , nullable = false)
-	@JsonBackReference
-	private VagaModel vagaId;
+    @ManyToOne
+    @JoinColumn(name = "empresa_id", nullable = false)
+    @JsonBackReference
+    private EmpresaModel empresaId ;
+
+    @ManyToOne
+    @JoinColumn(name = "vaga_id", nullable = false)
+    @JsonBackReference
+    private VagaModel vagaId;
 	
 
 }

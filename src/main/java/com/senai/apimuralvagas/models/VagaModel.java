@@ -1,6 +1,7 @@
 package com.senai.apimuralvagas.models;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -61,9 +62,9 @@ public class VagaModel {
     @Future()
     private LocalDateTime dataExpiracao;
 
-    @OneToMany(mappedBy = "vagaId", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "vagaId", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	@JsonManagedReference
     @JsonIgnore
-    private Set<EmpresaVagaModel> empresaVagas;
+    private Set<EmpresaVagaModel> empresaVagas = new HashSet<>();
 
 }
