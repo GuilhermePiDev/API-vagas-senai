@@ -35,6 +35,16 @@ public class EmpresaController {
         return empresaService.returnAllEmpresas();
     }
 
+    @GetMapping("/true")
+    public List<EmpresaModel> returnTrue() {
+        return empresaService.returnTrue();
+    }
+
+    @GetMapping("/false")
+    public List<EmpresaModel> returnFalse() {
+        return empresaService.returnFalse();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<EmpresaModel> returnOneEmpresa(@PathVariable int id) {
         EmpresaModel empresa = empresaService.returnOneEmpresa(id);
