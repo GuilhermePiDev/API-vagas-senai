@@ -14,13 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    
     @Autowired
     private SecurityFilter securityFilter;
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -33,20 +32,20 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        return httpSecurity
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers(HttpMethod.POST,"/auth/cadastro/admin","/auth/cadastro/empresa","/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST,"/auth/login").hasRole("EMPRESA")
+                .requestMatchers(HttpMethod.POST, "/auth/cadastro/admin", "/auth/cadastro/empresa", "/auth/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/empresa/**").permitAll()
                 .requestMatchers(HttpMethod.PATCH, "/admin/**").hasRole("ADMIN")
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**",  "/swagger-ui.html", "/swagger-resources/**", "/webjars/**" ).permitAll()
                 .requestMatchers(HttpMethod.DELETE, "/empresa/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PATCH, "/empresa/**").hasRole("EMPRESA")
                 .requestMatchers(HttpMethod.POST, "/vagas/**").hasRole("EMPRESA")
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.GET, "/vagas/**").permitAll()
+                .anyRequest().permitAll() 
             )
             .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
