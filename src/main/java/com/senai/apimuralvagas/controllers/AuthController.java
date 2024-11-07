@@ -1,11 +1,15 @@
 package com.senai.apimuralvagas.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,8 +66,14 @@ public class AuthController {
 
         var loginUser = authenticationManager.authenticate(authenticationToken);
 
-        var token = tokenService.generateToken((UserDetails) loginUser.getPrincipal());
+        UserDetails userDetails = (UserDetails) loginUser.getPrincipal();
+        var token = tokenService.generateToken(userDetails);
+       
+            
+        List<String> roles = userDetails.getAuthorities().stream()
+                                    .map(GrantedAuthority::getAuthority)
+                                    .collect(Collectors.toList());
     
-        return new ResponseEntity<>(new AuthResponseDTO(token), HttpStatus.OK);
+        return new ResponseEntity<>(new AuthResponseDTO(token, roles), HttpStatus.OK);
     }
 }
