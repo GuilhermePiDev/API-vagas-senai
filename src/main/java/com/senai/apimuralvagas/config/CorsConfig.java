@@ -15,7 +15,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // Permite CORS em todos os endpoints
                         .allowedOrigins("*") // Substitua com os domínios permitidos
-                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Métodos HTTP permitidos
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH") // Métodos HTTP permitidos
                         .allowedHeaders("*") ;// Cabeçalhos permitidos
                        // .allowCredentials(true); // Se você quiser permitir cookies e autenticação
             }
