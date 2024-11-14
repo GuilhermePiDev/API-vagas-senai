@@ -36,7 +36,7 @@ public class TokenService {
             
             return token;
         } catch (JWTCreationException e) {
-            throw new JWTCreate(null);
+            throw new JWTCreate(e);
         }
     }
 

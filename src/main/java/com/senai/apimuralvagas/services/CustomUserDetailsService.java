@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.senai.apimuralvagas.exceptions.UserNotFoundException;
 import com.senai.apimuralvagas.repositorys.AdminRepo;
 import com.senai.apimuralvagas.repositorys.EmpresaRepo;
 
@@ -33,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             return userDetails;
         }
 
-        throw new UsernameNotFoundException("Usuário não encontrado");
+        throw new UserNotFoundException(email);
     }
 
 }
