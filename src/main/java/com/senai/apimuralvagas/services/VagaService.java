@@ -93,6 +93,7 @@ public class VagaService {
         return vagaRepo.save(empresaExistente);
     }
 
+    @Transactional
     public void deleteVaga(int id) throws CustomAccessException {
         existVaga(id);
     
@@ -101,13 +102,8 @@ public class VagaService {
         }
     
 
-        VagaModel vaga = vagaRepo.findById(id).orElse(null);
-    
-        
-        vaga.getEmpresaVagas().clear();
-        vagaRepo.save(vaga); 
-    
-        
+        empresaVagaRepo.deleteByVagaId(id);
+
         vagaRepo.deleteById(id);
     }
     
