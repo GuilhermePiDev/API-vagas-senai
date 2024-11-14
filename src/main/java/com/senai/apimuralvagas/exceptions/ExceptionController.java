@@ -2,17 +2,21 @@ package com.senai.apimuralvagas.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionController {
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -52,22 +56,29 @@ public class ExceptionController {
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(JWTCreate.class)
-    public ResponseEntity<ErrorResponse> handleJWTCreateException(JWTCreate e, HttpServletRequest request) {
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "JWT Creation Error", e.getMessage(),
-                request.getRequestURI());
-    }
-
-    @ExceptionHandler(JWTVerification.class)
-    public ResponseEntity<ErrorResponse> handleJWTVerificationException(JWTVerification e, HttpServletRequest request) {
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "JWT Verification Error", e.getMessage(),
-                request.getRequestURI());
-    }
-
+    
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String error, String message,
             String path) {
         ErrorResponse errorResponse = new ErrorResponse(status.value(), error, message, path);
         return new ResponseEntity<>(errorResponse, status);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e,
+            HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, "User Not Found", e.getMessage(), request.getRequestURI());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e,
+            HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid Credentials", e.getMessage(), request.getRequestURI());
+    }
+    @ExceptionHandler(JWTVerification.class)
+    public ResponseEntity<ErrorResponse> handleJWTVerificationException(JWTVerificationException e, HttpServletRequest request) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Unauthorized", e.getMessage(), request.getRequestURI());
+    }
+
+
+
 }
