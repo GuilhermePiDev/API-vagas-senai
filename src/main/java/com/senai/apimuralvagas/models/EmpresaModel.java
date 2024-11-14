@@ -59,7 +59,7 @@ public class EmpresaModel implements UserDetails {
 
 	private RoleEnum role;
 
-	@OneToMany(mappedBy = "empresaId", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "empresaId", cascade = CascadeType.ALL)
 	@JsonBackReference
 	@JsonIgnore
 	private Set<EmpresaVagaModel> empresaVagas;

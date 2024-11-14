@@ -36,4 +36,7 @@ public class EnderecoModel {
 	@NotBlank
 	private String pais;
 
+	@NotBlank
+	private String estado;
+
 }
