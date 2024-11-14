@@ -63,37 +63,63 @@ public class VagaService {
     }
 
     @Transactional
-    public VagaModel updateEmpresaParcial(VagaModel empresaPatch, int id) throws CustomAccessException {
-
+    public VagaModel updateVagaParcial(VagaModel empresaPatch, int id) throws CustomAccessException {
         existVaga(id);
-        VagaModel empresaExistente = vagaRepo.findById(id).orElse(null);
 
+        if (!isOwnerOfVaga(id)) {
+            throw new CustomAccessException(
+
+            );
+        }
+
+        VagaModel empresaExistente = vagaRepo.findById(id).orElse(null);
         Field[] fields = VagaModel.class.getDeclaredFields();
 
         for (Field field : fields) {
             field.setAccessible(true);
             try {
-
-                if (field.getName().equals("empresaId")) {
+                if (field.getName().equals("empresaId")||field.getName().equals("cnpj")) {
                     continue;
                 }
                 Object value = field.get(empresaPatch);
                 if (value != null) {
                     field.set(empresaExistente, value);
                 }
-
             } catch (IllegalAccessException e) {
                 throw new CustomAccessException();
             }
-
         }
 
         return vagaRepo.save(empresaExistente);
     }
 
-    public void deleteVaga(int id) {
+    public void deleteVaga(int id) throws CustomAccessException {
         existVaga(id);
+    
+        if (!isOwnerOfVaga(id)) {
+            throw new CustomAccessException();
+        }
+    
+
+        VagaModel vaga = vagaRepo.findById(id).orElse(null);
+    
+        
+        vaga.getEmpresaVagas().clear();
+        vagaRepo.save(vaga); 
+    
+        
         vagaRepo.deleteById(id);
+    }
+    
+
+
+
+    private boolean isOwnerOfVaga(int vagaId) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = userDetails.getUsername();
+
+        EmpresaVagaModel empresaVaga = empresaVagaRepo.findById(vagaId).orElse(null);
+        return empresaVaga != null && empresaVaga.getEmpresaId().getEmail().equals(email);
     }
 
     private void existVaga(Integer id) {
