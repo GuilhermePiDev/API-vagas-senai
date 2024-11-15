@@ -13,8 +13,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.senai.apimuralvagas.exceptions.JWTCreate;
-import com.senai.apimuralvagas.exceptions.JWTVerification;
+
 
 
 @Service
@@ -36,7 +35,7 @@ public class TokenService {
             
             return token;
         } catch (JWTCreationException e) {
-            throw new JWTCreate(e);
+            return null;
         }
     }
 
@@ -53,7 +52,7 @@ public class TokenService {
             return  validate;
             
         } catch (JWTVerificationException e) {
-            throw new JWTVerification();
+            throw null;
         }
     }
 

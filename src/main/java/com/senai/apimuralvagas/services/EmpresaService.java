@@ -94,7 +94,7 @@ public class EmpresaService {
             field.setAccessible(true);
             try {
 
-                if (field.getName().equals("empresaId")) {
+                if (field.getName().equals("empresaId") || field.getName().equals("autorizacao")) {
                     continue;
                 }
                 Object value = field.get(empresaPatch);
