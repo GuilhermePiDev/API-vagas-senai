@@ -31,6 +31,12 @@ public class VagaController {
         return vagaService.returnAllVagas();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<VagaModel> returnOneVaga(@PathVariable int id){
+        VagaModel vagaModel = vagaService.returnOneVaga(id);
+        return new ResponseEntity<>(vagaModel, HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<VagaModel> postVaga(@Valid @RequestBody VagaModel vaga){
         VagaModel vagaModel = vagaService.postVaga(vaga);
