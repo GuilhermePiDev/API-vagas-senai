@@ -8,8 +8,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -61,11 +59,10 @@ public class ExceptionController {
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e, HttpServletRequest request) {
         return buildErrorResponse(HttpStatus.NOT_FOUND, "User Not Found", e.getMessage(), request.getRequestURI());
     }
-
+    
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e, HttpServletRequest request) {
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid Credentials", e.getMessage(),request.getRequestURI());
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, "Invalid Credentials", e.getMessage(), request.getRequestURI());
     }
-
 
 }
