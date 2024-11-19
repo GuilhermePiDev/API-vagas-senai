@@ -13,13 +13,17 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.senai.apimuralvagas.exceptions.TokenExpiradoException;
+import com.senai.apimuralvagas.exceptions.TokenGenerateError;
+import com.senai.apimuralvagas.exceptions.TokenInvalidoException;
 
 
 
 @Service
 public class TokenService {
 
-    @Value("api.mural.vagas.tokek.secret")
+    @Value("apisenaivagas")
     private String secret;
 
     public String generateToken(UserDetails user){
@@ -35,7 +39,7 @@ public class TokenService {
             
             return token;
         } catch (JWTCreationException e) {
-            return null;
+            throw new TokenGenerateError() ;
         }
     }
 
@@ -51,8 +55,10 @@ public class TokenService {
 
             return  validate;
             
+            } catch (TokenExpiredException e) {
+            throw new TokenExpiradoException();
         } catch (JWTVerificationException e) {
-            throw null;
+            throw new TokenInvalidoException();
         }
     }
 
