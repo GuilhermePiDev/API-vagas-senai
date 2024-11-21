@@ -13,4 +13,6 @@ public interface EmpresaRepo extends JpaRepository<EmpresaModel, Integer> {
     Optional<EmpresaModel> findByCnpj(String cnpj);
     
     EmpresaModel findByEmail(String email);
+
+    EmpresaModel findByName(String nomeEmpresa);
 }
