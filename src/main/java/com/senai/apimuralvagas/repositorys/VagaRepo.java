@@ -6,5 +6,5 @@ import com.senai.apimuralvagas.models.VagaModel;
 
 public interface VagaRepo extends JpaRepository<VagaModel, Integer>{
 
-    VagaModel findByName(String nomeVaga);
+    VagaModel findByNomeVaga(String nomeVaga);
 }

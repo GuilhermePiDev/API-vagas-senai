@@ -1,13 +1,12 @@
 package com.senai.apimuralvagas.services;
 
-import java.util.Collections;
-import java.util.List;
+
 import java.lang.reflect.Field;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,40 +23,35 @@ public class EmpresaService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public List<EmpresaModel> returnAllEmpresas() {
+    public Page<EmpresaModel> returnAllEmpresas(Pageable pageable) {
         if (empresaRepo != null) {
-            return empresaRepo.findAll();
+            return empresaRepo.findAll(pageable); 
         } else {
-            return null;
+            return Page.empty();
         }
-
     }
-
+    
     public EmpresaModel returnOneEmpresa(int id) {
-        existEmpresa(id);
-        return empresaRepo.findById(id).orElse(null);
-
+        existEmpresa(id); // Verifica se a empresa existe (presumindo que lança exceção se não existir)
+        return empresaRepo.findById(id).orElse(null); // Retorna a empresa ou null
     }
-
-    public List<EmpresaModel> returnTrue() {
+    
+    public Page<EmpresaModel> returnTrue(Pageable pageable) {
         if (empresaRepo != null) {
-            return empresaRepo.findAll().stream()
-                    .filter(empresa -> empresa.getAutorizacao() == true) 
-                    .collect(Collectors.toList());
+            return empresaRepo.findByAutorizacaoTrue(pageable); // Busca empresas com autorização verdadeira
         } else {
-            return Collections.emptyList();
+            return Page.empty(); // Retorna uma página vazia
         }
     }
-
-    public List<EmpresaModel> returnFalse() {
+    
+    public Page<EmpresaModel> returnFalse(Pageable pageable) {
         if (empresaRepo != null) {
-            return empresaRepo.findAll().stream()
-                    .filter(empresa -> empresa.getAutorizacao() == false) 
-                    .collect(Collectors.toList());
+            return empresaRepo.findByAutorizacaoFalse(pageable); // Busca empresas com autorização falsa
         } else {
-            return Collections.emptyList();
+            return Page.empty(); // Retorna uma página vazia
         }
     }
+    
 
     public void deleteEmpresa(int id) {
         existEmpresa(id);

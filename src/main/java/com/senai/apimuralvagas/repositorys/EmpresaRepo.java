@@ -2,6 +2,7 @@ package com.senai.apimuralvagas.repositorys;
 
 import  java.util.Optional;
 
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,8 @@ public interface EmpresaRepo extends JpaRepository<EmpresaModel, Integer> {
     
     EmpresaModel findByEmail(String email);
 
-    EmpresaModel findByName(String nomeEmpresa);
+    EmpresaModel findByNomeEmpresa(String nomeEmpresa);
+
+    Page<EmpresaModel> findByAutorizacaoTrue(Pageable pageable); 
+    Page<EmpresaModel> findByAutorizacaoFalse(Pageable pageable); 
 }

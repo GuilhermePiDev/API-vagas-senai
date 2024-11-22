@@ -1,9 +1,11 @@
 package com.senai.apimuralvagas.services;
 
 import java.lang.reflect.Field;
-import java.util.List;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -31,8 +33,8 @@ public class VagaService {
     @Autowired
     private EmpresaVagaRepo empresaVagaRepo;
 
-    public List<VagaModel> returnAllVagas() {
-        return vagaRepo.findAll();
+    public Page<VagaModel> returnAllVagas(Pageable pageable) {
+        return vagaRepo.findAll(pageable);
 
     }
 
