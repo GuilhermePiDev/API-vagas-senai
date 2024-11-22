@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.senai.apimuralvagas.DTO.AuthRequiereDto;
 import com.senai.apimuralvagas.DTO.AuthResponseDTO;
+import com.senai.apimuralvagas.config.CustomUserDetails;
 import com.senai.apimuralvagas.models.AdminModel;
 import com.senai.apimuralvagas.models.EmpresaModel;
 import com.senai.apimuralvagas.services.AdminService;
@@ -61,19 +61,22 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid AuthRequiereDto auth) {
-
+       
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(auth.email(),auth.senha());
 
         var loginUser = authenticationManager.authenticate(authenticationToken);
+        CustomUserDetails userDetails = (CustomUserDetails) loginUser.getPrincipal();
+        String token = tokenService.generateToken(userDetails);
 
-        UserDetails userDetails = (UserDetails) loginUser.getPrincipal();
-        var token = tokenService.generateToken(userDetails);
-       
-            
+     
+        int userId = userDetails.getId();
         List<String> roles = userDetails.getAuthorities().stream()
-                                    .map(GrantedAuthority::getAuthority)
-                                    .collect(Collectors.toList());
-    
-        return new ResponseEntity<>(new AuthResponseDTO(token, roles), HttpStatus.OK);
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        
+        AuthResponseDTO response = new AuthResponseDTO(token, roles, userId);
+        return ResponseEntity.ok(response);
     }
+
 }
