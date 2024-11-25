@@ -1,6 +1,5 @@
 package com.senai.apimuralvagas.controllers;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.senai.apimuralvagas.exceptions.CustomAccessException;
 import com.senai.apimuralvagas.models.EmpresaModel;
+import com.senai.apimuralvagas.models.VagaModel;
 import com.senai.apimuralvagas.services.EmpresaService;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,21 +29,24 @@ public class EmpresaController {
 
     @Autowired
     private EmpresaService empresaService;
-
+       
     @GetMapping
-    public ResponseEntity<Page<EmpresaModel>> returnAllEmpresasC(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<EmpresaModel>> returnAllEmpresasC(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(empresaService.returnAllEmpresas(pageable));
     }
 
     @GetMapping("/true")
-    public ResponseEntity<Page<EmpresaModel>> returnTrue(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<EmpresaModel>> returnTrue(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(empresaService.returnTrue(pageable));
     }
 
     @GetMapping("/false")
-    public ResponseEntity<Page<EmpresaModel>> returnFalse(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<EmpresaModel>> returnFalse(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(empresaService.returnFalse(pageable));
     }
@@ -66,4 +69,17 @@ public class EmpresaController {
         EmpresaModel empresa = empresaService.updateEmpresaParcial(empresaPatch, id);
         return new ResponseEntity<>(empresa, HttpStatus.OK);
     }
+
+    @GetMapping("/{empresaId}/vagas")
+    public ResponseEntity<Page<VagaModel>> getVagasByEmpresaId(
+            @PathVariable int empresaId,
+            Pageable pageable) {
+
+        Page<VagaModel> vagas = empresaService.findVagasByEmpresaId(empresaId, pageable);
+        if (vagas.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(vagas);
+    }
+
 }
