@@ -68,10 +68,8 @@ public class VagaService {
     public VagaModel updateVagaParcial(VagaModel empresaPatch, int id) throws CustomAccessException {
         existVaga(id);
 
-        if (!isOwnerOfVaga(id)) {
-            throw new CustomAccessException(
-
-            );
+        if (!isOwnerOfVaga(id)&&!isAdmin()) {
+            throw new CustomAccessException();
         }
 
         VagaModel empresaExistente = vagaRepo.findById(id).orElse(null);
@@ -99,7 +97,7 @@ public class VagaService {
     public void deleteVaga(int id) throws CustomAccessException {
         existVaga(id);
     
-        if (!isOwnerOfVaga(id)) {
+        if (!isOwnerOfVaga(id)&&!isAdmin()) {
             throw new CustomAccessException();
         }
     
@@ -119,6 +117,13 @@ public class VagaService {
         EmpresaVagaModel empresaVaga = empresaVagaRepo.findById(vagaId).orElse(null);
         return empresaVaga != null && empresaVaga.getEmpresaId().getEmail().equals(email);
     }
+
+    private boolean isAdmin() {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userDetails.getAuthorities().stream()
+            .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+    }
+    
 
     private void existVaga(Integer id) {
         if (!vagaRepo.existsById(id)) {
