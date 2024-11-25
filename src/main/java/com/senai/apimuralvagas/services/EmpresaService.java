@@ -1,18 +1,22 @@
 package com.senai.apimuralvagas.services;
 
-
 import java.lang.reflect.Field;
-
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.senai.apimuralvagas.models.EmpresaModel;
+import com.senai.apimuralvagas.models.EmpresaVagaModel;
+import com.senai.apimuralvagas.models.VagaModel;
 import com.senai.apimuralvagas.repositorys.EmpresaRepo;
-
+import com.senai.apimuralvagas.repositorys.EmpresaVagaRepo;
 import com.senai.apimuralvagas.exceptions.*;
 
 @Service("empresaService")
@@ -21,21 +25,24 @@ public class EmpresaService {
     private EmpresaRepo empresaRepo;
 
     @Autowired
+    private EmpresaVagaRepo empresaVagaRepo;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public Page<EmpresaModel> returnAllEmpresas(Pageable pageable) {
         if (empresaRepo != null) {
-            return empresaRepo.findAll(pageable); 
+            return empresaRepo.findAll(pageable);
         } else {
             return Page.empty();
         }
     }
-    
+
     public EmpresaModel returnOneEmpresa(int id) {
         existEmpresa(id); // Verifica se a empresa existe (presumindo que lança exceção se não existir)
         return empresaRepo.findById(id).orElse(null); // Retorna a empresa ou null
     }
-    
+
     public Page<EmpresaModel> returnTrue(Pageable pageable) {
         if (empresaRepo != null) {
             return empresaRepo.findByAutorizacaoTrue(pageable); // Busca empresas com autorização verdadeira
@@ -43,7 +50,7 @@ public class EmpresaService {
             return Page.empty(); // Retorna uma página vazia
         }
     }
-    
+
     public Page<EmpresaModel> returnFalse(Pageable pageable) {
         if (empresaRepo != null) {
             return empresaRepo.findByAutorizacaoFalse(pageable); // Busca empresas com autorização falsa
@@ -51,7 +58,6 @@ public class EmpresaService {
             return Page.empty(); // Retorna uma página vazia
         }
     }
-    
 
     public void deleteEmpresa(int id) {
         existEmpresa(id);
@@ -157,5 +163,17 @@ public class EmpresaService {
         empresa.setAutorizacao(true);
         return empresaRepo.save(empresa);
     }
+
+    public Page<VagaModel> findVagasByEmpresaId(int empresaId, Pageable pageable) {
+    Page<EmpresaVagaModel> empresaVagaPage = empresaVagaRepo.findByEmpresaId(empresaId, pageable);
+
+    List<VagaModel> vagas = empresaVagaPage.getContent().stream()
+                                           .map(EmpresaVagaModel::getVagaId)
+                                           .collect(Collectors.toList());
+
+   
+    return new PageImpl<>(vagas, pageable, empresaVagaPage.getTotalElements());
+}
+
 
 }
