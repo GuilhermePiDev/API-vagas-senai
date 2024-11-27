@@ -32,7 +32,7 @@ public class EmpresaController {
        
     @GetMapping
     public ResponseEntity<Page<EmpresaModel>> returnAllEmpresasC(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+    @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(empresaService.returnAllEmpresas(pageable));
     }
@@ -79,7 +79,7 @@ public class EmpresaController {
         if (vagas.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(vagas);
+        return new ResponseEntity<>(vagas, HttpStatus.OK);
     }
 
 }

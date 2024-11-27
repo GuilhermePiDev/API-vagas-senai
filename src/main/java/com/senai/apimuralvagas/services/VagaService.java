@@ -1,7 +1,9 @@
 package com.senai.apimuralvagas.services;
 
 import java.lang.reflect.Field;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,6 +39,21 @@ public class VagaService {
         return vagaRepo.findAll(pageable);
 
     }
+
+    public Page<Map<String, Object>> returnAllVagass(Pageable pageable) {
+        return vagaRepo.findAll(pageable).map(vaga -> {
+            Optional<Integer> criadorId = vagaRepo.findCriadorIdByVagaId(vaga.getVagaId());
+            return Map.of(
+                "vaga", vaga,
+                "criadorId", criadorId.orElse(null)
+            );
+        });
+    }
+    
+
+
+   
+
 
     public VagaModel returnOneVaga(Integer id) {
         existVaga(id);
@@ -92,6 +109,11 @@ public class VagaService {
 
         return vagaRepo.save(empresaExistente);
     }
+
+    public Optional<Integer> getCriadorIdByVagaId(int vagaId) {
+        return vagaRepo.findCriadorIdByVagaId(vagaId);
+    }
+    
 
     @Transactional
     public void deleteVaga(int id) throws CustomAccessException {

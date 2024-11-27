@@ -1,5 +1,7 @@
 package com.senai.apimuralvagas.controllers;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
@@ -27,9 +29,16 @@ public class VagaController {
     private VagaService vagaService;
 
     @GetMapping
-    public ResponseEntity<Page<VagaModel>> returnAllVagas(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<VagaModel>> returnAllVagas(@RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<VagaModel> vagas = vagaService.returnAllVagas(pageable);
+        return ResponseEntity.ok(vagas);
+    }
+
+    @GetMapping("/criador")
+    public ResponseEntity<Page<Map<String, Object>>> getAllVagas(Pageable pageable) {
+        Page<Map<String, Object>> vagas = vagaService.returnAllVagass(pageable);
         return ResponseEntity.ok(vagas);
     }
 
