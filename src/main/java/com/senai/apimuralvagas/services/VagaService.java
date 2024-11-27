@@ -1,6 +1,7 @@
 package com.senai.apimuralvagas.services;
 
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -35,47 +37,77 @@ public class VagaService {
     @Autowired
     private EmpresaVagaRepo empresaVagaRepo;
 
-    public Page<VagaModel> returnAllVagas(Pageable pageable) {
-        return vagaRepo.findAll(pageable);
-
-    }
-
-    public Page<Map<String, Object>> returnAllVagass(Pageable pageable) {
+    public Page<Map<String, Object>> returnAllVagas(Pageable pageable) {
         return vagaRepo.findAll(pageable).map(vaga -> {
             Optional<Integer> criadorId = vagaRepo.findCriadorIdByVagaId(vaga.getVagaId());
+
+            if (criadorId.isEmpty()) {
+                System.out.println("Criador não encontrado para a vaga ID: " + vaga.getVagaId());
+            }
+
             return Map.of(
-                "vaga", vaga,
-                "criadorId", criadorId.orElse(null)
-            );
+                    "vaga", vaga,
+                    "criadorId", criadorId.orElse(null));
         });
     }
-    
 
-
-   
-
-
-    public VagaModel returnOneVaga(Integer id) {
+    public Map<String, Object> returnOneVaga(Integer id) {
         existVaga(id);
-        return vagaRepo.findById(id).orElse(null);
+
+        VagaModel vaga = vagaRepo.findById(id).orElse(null);
+        Optional<Integer> criadorId = vagaRepo.findCriadorIdByVagaId(vaga.getVagaId());
+        return Map.of(
+                "vaga", vaga,
+                "criadorId", criadorId.orElse(null));
+    }
+
+    public Page<Map<String, Object>> filterVagas(String nomeVaga, String modeloTrabalho, String formaCandidatura,
+            Double salarioMin, Double salarioMax, LocalDateTime dataPublicacao, Pageable pageable) {
+        Specification<VagaModel> spec = Specification.where(null);
+
+        if (nomeVaga != null) {
+            spec = spec.and((root, query, cb) -> cb.like(root.get("nomeVaga"), "%" + nomeVaga + "%"));
+        }
+        if (modeloTrabalho != null) {
+            spec = spec
+                    .and((root, query, cb) -> cb.equal(root.join("modeloTrabalho").get("descricao"), modeloTrabalho));
+        }
+        if (formaCandidatura != null) {
+            spec = spec.and(
+                    (root, query, cb) -> cb.equal(root.join("formaCandidatura").get("descricao"), formaCandidatura));
+        }
+        if (salarioMin != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("salario"), salarioMin));
+        }
+        if (salarioMax != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThanOrEqualTo(root.get("salario"), salarioMax));
+        }
+        if (dataPublicacao != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("dataPublicacao"), dataPublicacao));
+        }
+
+        return vagaRepo.findAll(spec, pageable).map(vaga -> Map.of(
+                "nomeVaga", vaga.getNomeVaga(),
+                "modeloTrabalho", vaga.getModeloTrabalho(),
+                "formaCandidatura", vaga.getFormaCandidatura(),
+                "salario", vaga.getSalario(),
+                "dataPublicacao", vaga.getDataPublicacao()));
     }
 
     @Transactional
     public VagaModel postVaga(VagaModel vaga) {
-      
+
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = userDetails.getUsername();
 
-      
         EmpresaModel usuario = empresaRepo.findByEmail(email);
 
         vaga = vagaRepo.save(vaga);
 
         EmpresaVagaModel empresaVaga = new EmpresaVagaModel();
         empresaVaga.setEmpresaId(usuario);
-        empresaVaga.setVagaId(vaga); 
+        empresaVaga.setVagaId(vaga);
 
-        
         empresaVagaRepo.save(empresaVaga);
 
         return vaga;
@@ -85,7 +117,7 @@ public class VagaService {
     public VagaModel updateVagaParcial(VagaModel empresaPatch, int id) throws CustomAccessException {
         existVaga(id);
 
-        if (!isOwnerOfVaga(id)&&!isAdmin()) {
+        if (!isOwnerOfVaga(id) && !isAdmin()) {
             throw new CustomAccessException();
         }
 
@@ -95,7 +127,7 @@ public class VagaService {
         for (Field field : fields) {
             field.setAccessible(true);
             try {
-                if (field.getName().equals("empresaId")||field.getName().equals("cnpj")) {
+                if (field.getName().equals("empresaId") || field.getName().equals("cnpj")) {
                     continue;
                 }
                 Object value = field.get(empresaPatch);
@@ -113,24 +145,19 @@ public class VagaService {
     public Optional<Integer> getCriadorIdByVagaId(int vagaId) {
         return vagaRepo.findCriadorIdByVagaId(vagaId);
     }
-    
 
     @Transactional
     public void deleteVaga(int id) throws CustomAccessException {
         existVaga(id);
-    
-        if (!isOwnerOfVaga(id)&&!isAdmin()) {
+
+        if (!isOwnerOfVaga(id) && !isAdmin()) {
             throw new CustomAccessException();
         }
-    
 
         empresaVagaRepo.deleteByVagaId(id);
 
         vagaRepo.deleteById(id);
     }
-    
-
-
 
     private boolean isOwnerOfVaga(int vagaId) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -143,9 +170,8 @@ public class VagaService {
     private boolean isAdmin() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userDetails.getAuthorities().stream()
-            .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
     }
-    
 
     private void existVaga(Integer id) {
         if (!vagaRepo.existsById(id)) {

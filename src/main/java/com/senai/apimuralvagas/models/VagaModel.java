@@ -36,6 +36,11 @@ public class VagaModel {
     @Valid
     private FormaCandidaturaModel formaCandidatura;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "modelo_trabalho_id")
+    @Valid
+    private ModeloTrabalhoModel modeloTrabalho;
+
     @NotBlank()
     private String descricao;
     

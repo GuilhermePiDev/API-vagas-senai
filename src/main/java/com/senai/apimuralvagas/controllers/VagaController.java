@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.senai.apimuralvagas.exceptions.CustomAccessException;
 import com.senai.apimuralvagas.models.VagaModel;
 import com.senai.apimuralvagas.services.VagaService;
@@ -28,24 +26,16 @@ public class VagaController {
     @Autowired
     private VagaService vagaService;
 
-    @GetMapping
-    public ResponseEntity<Page<VagaModel>> returnAllVagas(@RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<VagaModel> vagas = vagaService.returnAllVagas(pageable);
-        return ResponseEntity.ok(vagas);
-    }
-
-    @GetMapping("/criador")
+    @GetMapping()
     public ResponseEntity<Page<Map<String, Object>>> getAllVagas(Pageable pageable) {
-        Page<Map<String, Object>> vagas = vagaService.returnAllVagass(pageable);
-        return ResponseEntity.ok(vagas);
+        Page<Map<String, Object>> vagas = vagaService.returnAllVagas(pageable);
+        return new ResponseEntity<>(vagas, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VagaModel> returnOneVaga(@PathVariable int id) {
-        VagaModel vagaModel = vagaService.returnOneVaga(id);
-        return new ResponseEntity<>(vagaModel, HttpStatus.OK);
+    public ResponseEntity<Map<String, Object>> returnOneVaga(@PathVariable int id) {
+        Map<String, Object> vagaComCriador = vagaService.returnOneVaga(id);
+        return new ResponseEntity<>(vagaComCriador, HttpStatus.OK);
     }
 
     @PostMapping
