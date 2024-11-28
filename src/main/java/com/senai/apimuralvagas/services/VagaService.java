@@ -2,7 +2,6 @@ package com.senai.apimuralvagas.services;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -70,11 +69,11 @@ public class VagaService {
         }
         if (modeloTrabalho != null) {
             spec = spec
-                    .and((root, query, cb) -> cb.equal(root.join("modeloTrabalho").get("descricao"), modeloTrabalho));
+                    .and((root, query, cb) -> cb.equal(root.join("modeloTrabalho").get("modeloTrabalho"), modeloTrabalho));
         }
         if (formaCandidatura != null) {
             spec = spec.and(
-                    (root, query, cb) -> cb.equal(root.join("formaCandidatura").get("descricao"), formaCandidatura));
+                    (root, query, cb) -> cb.equal(root.join("formaCandidatura").get("formaCandidatura"), formaCandidatura));
         }
         if (salarioMin != null) {
             spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("salario"), salarioMin));
@@ -86,12 +85,7 @@ public class VagaService {
             spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("dataPublicacao"), dataPublicacao));
         }
 
-        return vagaRepo.findAll(spec, pageable).map(vaga -> Map.of(
-                "nomeVaga", vaga.getNomeVaga(),
-                "modeloTrabalho", vaga.getModeloTrabalho(),
-                "formaCandidatura", vaga.getFormaCandidatura(),
-                "salario", vaga.getSalario(),
-                "dataPublicacao", vaga.getDataPublicacao()));
+        return vagaRepo.findAll(spec, pageable).map(vaga -> Map.of("vaga", vaga));
     }
 
     @Transactional

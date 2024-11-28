@@ -1,9 +1,11 @@
 package com.senai.apimuralvagas.controllers;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.senai.apimuralvagas.exceptions.CustomAccessException;
 import com.senai.apimuralvagas.models.VagaModel;
@@ -37,6 +40,23 @@ public class VagaController {
         Map<String, Object> vagaComCriador = vagaService.returnOneVaga(id);
         return new ResponseEntity<>(vagaComCriador, HttpStatus.OK);
     }
+
+    @GetMapping("/filter")
+    public ResponseEntity<Page<Map<String, Object>>> filterVagas(
+            @RequestParam(required = false) String nomeVaga,
+            @RequestParam(required = false) String modeloTrabalho,
+            @RequestParam(required = false) String formaCandidatura,
+            @RequestParam(required = false) Double salarioMin,
+            @RequestParam(required = false) Double salarioMax,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dataPublicacao,
+            Pageable pageable) {
+
+        Page<Map<String, Object>> filteredVagas = vagaService.filterVagas(
+                nomeVaga, modeloTrabalho, formaCandidatura, salarioMin, salarioMax, dataPublicacao, pageable);
+
+                return new ResponseEntity<>(filteredVagas, HttpStatus.CREATED);
+            }
+    
 
     @PostMapping
     public ResponseEntity<VagaModel> postVaga(@Valid @RequestBody VagaModel vaga) {
