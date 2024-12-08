@@ -64,6 +64,8 @@ public class VagaService {
             Double salarioMin, Double salarioMax, LocalDateTime dataPublicacao, Pageable pageable) {
         Specification<VagaModel> spec = Specification.where(null);
 
+      
+
         if (nomeVaga != null) {
             spec = spec.and((root, query, cb) -> cb.like(root.get("nomeVaga"), "%" + nomeVaga + "%"));
         }
@@ -84,8 +86,14 @@ public class VagaService {
         if (dataPublicacao != null) {
             spec = spec.and((root, query, cb) -> cb.greaterThanOrEqualTo(root.get("dataPublicacao"), dataPublicacao));
         }
+        
 
-        return vagaRepo.findAll(spec, pageable).map(vaga -> Map.of("vaga", vaga));
+        return vagaRepo.findAll(spec, pageable).map(vaga -> {
+            Optional<Integer> criadorId = vagaRepo.findCriadorIdByVagaId(vaga.getVagaId());
+            return Map.of(
+                    "vaga", vaga,
+                    "criadorId", criadorId.orElse(null));
+        });
     }
 
     @Transactional
