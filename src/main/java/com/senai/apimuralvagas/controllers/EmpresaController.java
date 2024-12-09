@@ -58,7 +58,7 @@ public class EmpresaController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarEmpresa(@PathVariable int id) {
+    public ResponseEntity<Void> deletarEmpresa(@PathVariable int id) throws CustomAccessException {
         empresaService.deleteEmpresa(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

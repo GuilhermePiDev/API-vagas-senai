@@ -59,10 +59,18 @@ public class EmpresaService {
         }
     }
 
-    public void deleteEmpresa(int id) {
-        existEmpresa(id);
-        empresaRepo.deleteById(id);
+
+    @Transactional
+    public void deleteEmpresa(int empresaId) throws CustomAccessException {
+        existEmpresa(empresaId);
+    
+        empresaVagaRepo.deleteByEmpresaId(empresaId);
+    
+        empresaRepo.deleteById(empresaId);
     }
+    
+    
+    
 
     @Transactional
     public EmpresaModel postEmpresa(EmpresaModel empresaModel) {

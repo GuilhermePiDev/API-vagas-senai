@@ -2,6 +2,7 @@ package com.senai.apimuralvagas.services;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -36,19 +37,23 @@ public class VagaService {
     @Autowired
     private EmpresaVagaRepo empresaVagaRepo;
 
-    public Page<Map<String, Object>> returnAllVagas(Pageable pageable) {
-        return vagaRepo.findAll(pageable).map(vaga -> {
-            Optional<Integer> criadorId = vagaRepo.findCriadorIdByVagaId(vaga.getVagaId());
+public Page<Map<String, Object>> returnAllVagas(Pageable pageable) {
+    return vagaRepo.findAll(pageable).map(vaga -> {
+        Optional<Integer> criadorId = vagaRepo.findCriadorIdByVagaId(vaga.getVagaId());
 
-            if (criadorId.isEmpty()) {
-                System.out.println("Criador não encontrado para a vaga ID: " + vaga.getVagaId());
-            }
+        if (criadorId.isEmpty()) {
+            System.out.println("Criador não encontrado para a vaga ID: " + vaga.getVagaId());
+        }
 
-            return Map.of(
-                    "vaga", vaga,
-                    "criadorId", criadorId.orElse(null));
-        });
-    }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("vaga", vaga);
+        result.put("criadorId", criadorId.orElse(null));
+
+        return result;
+    });
+}
+
 
     public Map<String, Object> returnOneVaga(Integer id) {
         existVaga(id);

@@ -20,4 +20,9 @@ public interface EmpresaVagaRepo extends JpaRepository<EmpresaVagaModel, Integer
     @Query("SELECT ev FROM EmpresaVagaModel ev WHERE ev.empresaId.empresaId = :empresaId")
     Page<EmpresaVagaModel> findByEmpresaId(@Param("empresaId") int empresaId, Pageable pageable);
 
+    @Modifying
+    @Query("DELETE FROM EmpresaVagaModel ev WHERE ev.empresaId.empresaId = :empresaId")
+    void deleteByEmpresaId(@Param("empresaId") int empresaId);
+    
+
 }
