@@ -134,7 +134,7 @@ public Page<Map<String, Object>> returnAllVagas(Pageable pageable) {
         for (Field field : fields) {
             field.setAccessible(true);
             try {
-                if (field.getName().equals("empresaId") || field.getName().equals("cnpj")) {
+                if (field.getName().equals("vagaId") || field.getName().equals("cnpj")) {
                     continue;
                 }
                 Object value = field.get(empresaPatch);
